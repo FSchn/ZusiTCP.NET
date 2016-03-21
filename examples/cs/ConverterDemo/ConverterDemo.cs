@@ -180,7 +180,7 @@ class ConverterDemo
 		int idNew;
 		if (BoolIdClientToMaster.TryGetValue(data.Id, out idNew))
 		{
-			master.SendBoolAsInt(data.Value, idNew);
+			master.SendBoolAsSingle(data.Value, idNew);
 		}
 	}
 	private static void On_DateTimeReceived(object sender, Zusi_Datenausgabe.DataSet<System.DateTime> data)
@@ -223,11 +223,11 @@ class ConverterDemo
 	}
 	private static void On_SifaReceived(object sender, Zusi_Datenausgabe.DataSet<Zusi_Datenausgabe.Sifa> data)
 	{
-		master.SendBoolAsInt(data.Value.OpticalReminderOn, 2596);
+		master.SendBoolAsSingle(data.Value.OpticalReminderOn, 2596);
 	}
 	private static void On_NotbremssystemReceived(object sender, Zusi_Datenausgabe.DataSet<Zusi_Datenausgabe.Notbremssystem> data)
 	{
-		master.SendBoolAsInt(data.Value.Notbremsung, 2606);
+		master.SendBoolAsSingle(data.Value.Notbremsung, 2606);
 	}
 	private static void On_DoorSystemReceived(object sender, Zusi_Datenausgabe.DataSet<Zusi_Datenausgabe.DoorSystem> data)
 	{
