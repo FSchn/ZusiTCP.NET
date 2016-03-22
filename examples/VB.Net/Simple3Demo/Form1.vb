@@ -94,8 +94,8 @@ Public Class Form1
         End Select
     End Sub
 
-    Private Sub TCPConnection_DoorsReceived(ByVal sender As Object, ByVal data As DataSet(Of DoorState)) _
-        Handles MyTCPConnection.DoorsReceived
+    Private Sub TCPConnection_DoorSystemReceived(ByVal sender As Object, ByVal data As DataSet(Of DoorSystem)) _
+        Handles MyTCPConnection.DoorSystemReceived
         Select Case data.Id
             Case Else
                 'We didn't request a Doors-data

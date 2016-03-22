@@ -104,6 +104,7 @@ class ConverterDemo
 		SingleIdClientToMaster.Add(0x0018, 2579);
 		SingleIdClientToMaster.Add(0x0061, 2645);
 		SingleIdClientToMaster.Add(0x000D, 2680); //?
+		SingleIdClientToMaster.Add(0x005E, 2681); //Extra-Wert
 		
 		BoolIdClientToMaster.Add(0x0013, 2597);
 		BoolIdClientToMaster.Add(0x001A, 2598);

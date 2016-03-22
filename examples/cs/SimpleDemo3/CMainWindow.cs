@@ -33,7 +33,7 @@ namespace ZusiTCPDemoApp
       MyTCPConnection.DateTimeReceived     += TCPConnection_DateTimeReceived;
       MyTCPConnection.BoolReceived         += TCPConnection_BoolReceived;
       MyTCPConnection.IntReceived          += TCPConnection_IntReceived;
-      MyTCPConnection.DoorsReceived        += TCPConnection_DoorsReceived;
+      MyTCPConnection.DoorSystemReceived   += TCPConnection_DoorSystemReceived;
       MyTCPConnection.BrakeConfigReceived  += TCPConnection_BrakeConfigReceived;
       MyTCPConnection.ErrorReceived        += TCPConnection_ErrorReceived;
       MyTCPConnection.ZugsicherungReceived += TCPConnection_ZugsicherungReceived;
@@ -144,7 +144,7 @@ namespace ZusiTCPDemoApp
       }
     }
 
-    private void TCPConnection_DoorsReceived(object sender, DataSet<DoorState> data) // Handles MyTCPConnection.DoorsReceived  
+    private void TCPConnection_DoorSystemReceived(object sender, DataSet<DoorSystem> data) // Handles MyTCPConnection.DoorSystemReceived  
     {
       switch (data.Id)
       {
