@@ -8,7 +8,7 @@ class ConverterDemo
 		System.Console.WriteLine("TCP Converter: Setup...");
 		FillTranslatorDicts();
 		System.Console.WriteLine("TCP Converter: Start master");
-		master = new Zusi_Datenausgabe.ZusiTcpTypeMaster("TestMaster", (System.Threading.SynchronizationContext) null);
+		master = new Zusi_Datenausgabe.ZusiTcpTypeMaster("Demo Converter Zusi 3 -> 2", (System.Threading.SynchronizationContext) null);
 		System.Console.WriteLine("Set up Master successfull");
 		master.ErrorReceived += TCPConnection_ErrorReceived;
 		master.Connect("localhost", 1435);
@@ -16,7 +16,7 @@ class ConverterDemo
 		System.Console.WriteLine("Connecting successfull");
 		
 		System.Console.WriteLine("TCP Converter: Start client");
-		client = new Zusi_Datenausgabe.ZusiTcp3TypeClient("Beispielclient", "1.0.0.0", 
+		client = new Zusi_Datenausgabe.ZusiTcp3TypeClient("Demo Converter Zusi 3 -> 2", "1.0.0.0", 
 										(System.Threading.SynchronizationContext) null);
 		System.Console.WriteLine("Set up Client successfull");
 		

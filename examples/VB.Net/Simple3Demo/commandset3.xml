@@ -33,7 +33,7 @@
   <Command ID="0x001F" Name="LM R-Bremse" Type="BoolAsSingle" />
   <Command ID="0x0020" Name="LM Hochabbremsung" Type="BoolAsSingle" />
   <Command ID="0x0021" Name="LM Schnellbremsung" Type="BoolAsSingle" />
-  <!--<Command ID="0x0022" Name="LM Notbremsung" Type="BoolAsSingle" /> => Spezialstruktur-->
+  <Command ID="0x0022" Name="Notbremssystem" Type="Notbremssystem" />
   <Command ID="0x0023" Name="Uhrzeit Digital" Type="TimeAsSingle" /> <!--Wird mit dem Datum zusammengefasst-->
   <Command ID="0x0024" Name="LM Drehzahlverstellung" Type="BoolAsSingle" />
   <Command ID="0x0025" Name="LM Fahrtrichtung vor" Type="BoolAsSingle" />
@@ -71,25 +71,25 @@ Stromabhnehmer => Spezial!
 Zustand F " => Spezial-Enum
 Steuerwagen 1...6
 
-Druck Zeitbehälter
-Geschwindigkeit (absolut)
-Zug ist entgleist
+  <Command ID="0x005E" Name="Druck Zeitbehälter" Type="Single" />
+  <Command ID="0x005F" Name="Geschwindigkeit (absolut)" Type="Single" />
+  <Command ID="0x0060" Name="Zug ist entgleist" Type="BoolAsSingle" />
   <Command ID="0x0061" Name="Strecken-Km" Type="Single" />
   <Command ID="0x0062" Name="Motorstrom" Type="Single" />
   <Command ID="0x0063" Name="Motorspannung" Type="Single" />
-
-Spezial: Sifa, Zugsicherung, Türen
+  <Command ID="0x0064" Name="Sifa" Type="Sifa" />
   <Command ID="0x0065" Name="Zugsicherung" Type="Zugsicherung" />
-
+  <Command ID="0x0066" Name="Türen" Type="DoorSystem" />
+  
 Individuell 21...40
 
 Stueruwagen7..22
 
-Geschwindigkeit Absolut incl. Schludern
+  <Command ID="0x008B" Name="Geschwindigkeit (absolut) incl. Schludern" Type="Single" />
+  <Command ID="0x008C" Name="Bateriehauptschalter ausgeschaltet" Type="BoolAsSingle" />
 
-Bateriehauptschalter => b
 Status Fahreug => Spezial
-Status Zugverband => Spezial
+Status Zugverband => Spezial (noch nicht implentiert)
 Bremsprobefunktion => ???
 
 

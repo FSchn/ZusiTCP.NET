@@ -185,7 +185,7 @@ namespace Zusi_Datenausgabe
     }
 
     /// <summary>
-    ///   Raised, when someone connected to the server.
+    ///   Raised, when someone (master or client) connected to the server.
     /// </summary>
     public event ClientConnectedEvent ClientConnected;
 
@@ -432,6 +432,13 @@ namespace Zusi_Datenausgabe
       _requestedData.ClaimRange(client.RequestedData);
     }
 
+    /// <summary>
+    ///   This mehtod is the last chance to fill the AnywayRequested-Collection and the first time
+    ///   the masterId is known.
+    /// </summary>
+    protected virtual void BeforeConnectingMaster(string masterId)
+    {
+    }
     private void MasterConnectionInitialized(object sender, EventArgs e)
     {
       ZusiTcpServerConnectionInitializer initializer = sender.AssertedCast<ZusiTcpServerConnectionInitializer>();
@@ -441,6 +448,7 @@ namespace Zusi_Datenausgabe
         initializer.RefuseConnectionAndTerminate();
         throw new NotSupportedException("Master is already connected. Cannot accept more than one master.");
       }
+      BeforeConnectingMaster(initializer.ClientId);
       _masterL = initializer.GetMasterConnection(HostContext, _requestedData.ReferencedToIEnumerable());
       _masterL.ConnectionState_Changed += MasterConnectionStateChanged;
       _masterL.ErrorReceived += MasterErrorReceived;

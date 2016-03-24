@@ -1,14 +1,15 @@
-class ServertTest1
+class ServertTest1 : Zusi_Datenausgabe.ZusiTcpServer
 {
-
 	public static void Main()
 	{
 		System.Console.WriteLine("TCP Server");
 		var commands = Zusi_Datenausgabe.CommandSet.LoadFromFile("commandset_server.xml");
-		var server = new Zusi_Datenausgabe.ZusiTcpServer(commands, null);
+		Zusi_Datenausgabe.ZusiTcpServer server = new ServertTest1(commands, null);
 		var listIds = new System.Collections.Generic.List<int>();
 		foreach(var i in commands.CommandByID)
 		{
+			if ((i.Key == 2680)||(i.Key == 2681))
+				continue;
 			listIds.Add(i.Value.ID);
 		}
 		server.ReplaceAnywayRequested(listIds);
@@ -53,5 +54,40 @@ class ServertTest1
 			masterConnected = (server.Master != null);
 		}
 		System.Console.WriteLine("Server shut down");
+	}
+
+	// Auf das Erben kann verzichtet werden, wenn man nicht kurz vor dem bekanntwerden des Clients noch was anfordern muss.
+	public ServertTest1(Zusi_Datenausgabe.CommandSet commandsetDocument, System.Threading.SynchronizationContext hostContext)
+		: base(commandsetDocument, hostContext)
+	{
+	}
+	
+	protected override void BeforeConnectingMaster(string masterId)
+	{
+		bool converter = masterId.ToLower().Contains("Converter".ToLower());
+		bool zusi = masterId.ToLower().Contains("Zusi".ToLower()) && !converter;
+		bool loksim = masterId.ToLower().Contains("Loksim".ToLower());
+		bool unknown = (!converter && !zusi && !loksim);
+		
+		if (unknown)
+			System.Console.WriteLine("Client Type not specific enaugh. Assume Oberstrom and Druck Zeitbehälter to be implemented.");
+		else if (loksim)
+			System.Console.WriteLine("Client Type Loksim. Assume Oberstrom to be implemented and Druck Zeitbehälter NOT implemented.");
+		else if (zusi)
+			System.Console.WriteLine("Client Type Zusi 2. Assume Oberstrom and Druck Zeitbehälter NOT to be implemented.");
+		else if (converter)
+			System.Console.WriteLine("Client Type Converter to Zusi 3. Assume Oberstrom and Druck Zeitbehälter to be implemented.");
+		
+		// Die beiden Speziellen IDs 2680 und 2681
+		var listIds = new System.Collections.Generic.List<int>(AnywayRequested);
+		if (converter || loksim || unknown)
+			listIds.Add(2680);
+		else
+			listIds.Remove(2680);
+		if (converter || unknown)
+			listIds.Add(2681);
+		else
+			listIds.Remove(2681);
+		
 	}
 }
