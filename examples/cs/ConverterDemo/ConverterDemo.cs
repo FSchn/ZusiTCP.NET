@@ -5,6 +5,12 @@ class ConverterDemo
 
 	public static void Main()
 	{
+		if (! System.IO.File.Exists("commandset3.xml") )
+		{
+			System.Console.WriteLine("commandset3.xml is not in the current directory. Program will not work. Press Enter to ignore.");
+			System.Console.ReadLine();
+		}
+
 		System.Console.WriteLine("TCP Converter: Setup...");
 		FillTranslatorDicts();
 		System.Console.WriteLine("TCP Converter: Start master");
@@ -118,6 +124,8 @@ class ConverterDemo
 		BoolIdClientToMaster.Add(0x0024, 2631);
 		BoolIdClientToMaster.Add(0x0025, 2632);
 		BoolIdClientToMaster.Add(0x0026, 2633);
+		BoolIdClientToMaster.Add(0x0014, 2682);
+		BoolIdClientToMaster.Add(0x0008, 2683);
 		
 		PZBVars.Add(2581);
 		PZBVars.Add(2580);
@@ -236,5 +244,6 @@ class ConverterDemo
 		master.SendBoolAsSingle(data.Value.Schalter_UnlockDoorsLeft || data.Value.Schalter_UnlockDoorsRight, 2607);
 		master.SendBoolAsSingle(data.Value.Schalter_UnlockDoorsLeft || data.Value.Schalter_UnlockDoorsRight, 2627);
 		master.SendBoolAsInt(data.Value.DoorSystemName != "", 2648);
+		System.Console.WriteLine(data.Value.DoorSystemName);
 	}
 }

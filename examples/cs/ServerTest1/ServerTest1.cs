@@ -8,7 +8,7 @@ class ServertTest1 : Zusi_Datenausgabe.ZusiTcpServer
 		var listIds = new System.Collections.Generic.List<int>();
 		foreach(var i in commands.CommandByID)
 		{
-			if ((i.Key == 2680)||(i.Key == 2681))
+			if ((i.Key == 2680)||(i.Key == 2681)||(i.Key == 2682)||(i.Key == 2683))
 				continue;
 			listIds.Add(i.Value.ID);
 		}
@@ -88,6 +88,14 @@ class ServertTest1 : Zusi_Datenausgabe.ZusiTcpServer
 			listIds.Add(2681);
 		else
 			listIds.Remove(2681);
+		if (converter || unknown)
+			listIds.Add(2682);
+		else
+			listIds.Remove(2682);
+		if (converter || unknown)
+			listIds.Add(2683);
+		else
+			listIds.Remove(2683);
 		
 	}
 }
