@@ -46,27 +46,73 @@ namespace ZusiTcpInterface.Zusi3
     public string ClientName
     {
       get { return _clientName; }
-      set { _clientName = value; }
+      set 
+      { 
+        if (_messageReceptionTask != null) 
+          throw new System.InvalidOperationException(); 
+        else 
+          _clientName = value;
+      }
     }
 
     public string ClientVersion
     {
       get { return _clientVersion; }
-      set { _clientVersion = value; }
+      set 
+      { 
+        if (_messageReceptionTask != null) 
+          throw new System.InvalidOperationException(); 
+        else 
+          _clientVersion = value;
+      }
     }
 
-    public ConnectionContainer(string cabInfoTypeDescriptorFilename = "Zusi3/CabInfoTypes.csv")
+    private static List<CabInfoTypeDescriptor> ReadCabListSave(string cabInfoTypeDescriptorFilename)
     {
       List<CabInfoTypeDescriptor> cabInfoDescriptors;
       using (var commandSetFileStream = File.OpenRead(cabInfoTypeDescriptorFilename))
       {
         cabInfoDescriptors = CabInfoTypeDescriptorReader.ReadCommandsetFrom(commandSetFileStream).ToList();
       }
-
+      return cabInfoDescriptors;
+    }
+    public ConnectionContainer(string cabInfoTypeDescriptorFilename = "Zusi3/CabInfoTypes.csv")
+      :this(ReadCabListSave(cabInfoTypeDescriptorFilename))
+    {
+    }
+    public ConnectionContainer(IEnumerable<CabInfoTypeDescriptor> cabInfoDescriptors)
+    {
       _descriptors = new DescriptorCollection(cabInfoDescriptors);
       var cabInfoConversionFunctions = GenerateConversionFunctions(cabInfoDescriptors);
 
       SetupNodeConverters(cabInfoConversionFunctions);
+      
+      try //Default values for ClientName and ClientVersion => Read from the .exe-Assembly
+      {
+        if ((System.Reflection.Assembly.GetEntryAssembly() != null) &&
+            (System.Reflection.Assembly.GetEntryAssembly().GetName() != null))
+        {
+          object[] assembyTitle = System.Reflection.Assembly.GetEntryAssembly().GetCustomAttributes(
+              typeof(System.Reflection.AssemblyTitleAttribute), true);
+          if ((assembyTitle != null) && (assembyTitle.Length == 1))
+          {
+            _clientName = ((System.Reflection.AssemblyTitleAttribute)(assembyTitle[0])).Title;
+          }
+          else if (System.Reflection.Assembly.GetEntryAssembly().GetName().Name != "")
+          {
+            _clientName = System.Reflection.Assembly.GetEntryAssembly().GetName().Name;
+          }
+          
+          if ((System.Reflection.Assembly.GetEntryAssembly().GetName().Version != null) &&
+              (System.Reflection.Assembly.GetEntryAssembly().GetName().Version != new Version(0, 0)))
+          {
+            _clientVersion = System.Reflection.Assembly.GetEntryAssembly().GetName().Version.ToString(); 
+          }
+        }
+      }
+      catch
+      {
+      }
     }
 
     private static void SetupNodeConverters(Dictionary<short, Func<short, byte[], IProtocolChunk>> cabInfoConversionFunctions)
@@ -138,9 +184,26 @@ namespace ZusiTcpInterface.Zusi3
 
     public void Connect(string hostname = "localhost", int port = 1436)
     {
+      if (_messageReceptionTask != null) 
+        throw new System.InvalidOperationException(); 
       _tcpClient = new TcpClient(hostname, port);
+      Connect(_tcpClient.GetStream());
+    }
 
-      var networkStream = new CancellableBlockingStream(_tcpClient.GetStream(), _cancellationTokenSource.Token);
+    public void Connect(System.Net.IPEndPoint endpoint)
+    {
+      if (_messageReceptionTask != null) 
+        throw new System.InvalidOperationException(); 
+      _tcpClient = new TcpClient(endpoint);
+      Connect(_tcpClient.GetStream());
+    }
+
+    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+    public void Connect(System.IO.Stream openStream)
+    {
+      if (_messageReceptionTask != null) 
+        throw new System.InvalidOperationException(); 
+      var networkStream = new CancellableBlockingStream(openStream, _cancellationTokenSource.Token);
       var binaryReader = new BinaryReader(networkStream);
       var binaryWriter = new BinaryWriter(networkStream);
 
