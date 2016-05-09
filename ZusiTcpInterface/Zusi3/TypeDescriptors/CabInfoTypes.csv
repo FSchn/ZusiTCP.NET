@@ -82,7 +82,7 @@
 0x0054;Drehbeschleunigung z-Achse;rad/s²;Single
 0x0055;Stromabnehmer;2x4 bit;Fail;4 bit: 1 für SA=oben; 4 bit: 1 für SA hebt sich gerade
 0x0056;LM Federspeicherbremse;aus/an;BoolAsSingle
-0x0057;Zustand Federspeicherbremse;-1, 0, 1, 2;Single;nicht vorhanden/aus/an/blinkend
+0x0057;Zustand Federspeicherbremse;-1, 0, 1, 2;FlashableValueAsSingle;nicht vorhanden/aus/an/blinkend
 0x0058;Steuerwagen: LM Getriebe;aus/an;BoolAsSingle
 0x0059;Steuerwagen: LM Schleudern;aus/an;BoolAsSingle
 0x005A;Steuerwagen: LM Gleiten;aus/an;BoolAsSingle
@@ -91,7 +91,7 @@
 0x005D;Steuerwagen: LM Drehzahlverstellung;aus/an;BoolAsSingle
 0x005E;Druck Zeitbehälter;bar;Single
 0x005F;Geschwindigkeit (absolut);m/s;Single
-0x0060;Zug ist entgleist;aus/ein;Single
+0x0060;Zug ist entgleist;aus/ein;BoolAsSingle
 0x0061;Kilometrierung (Zugspitze);km;Single
 0x0062;Motorstrom;A;Single
 0x0063;Motorspannung;V;Single
@@ -135,7 +135,7 @@
 0x0089;Steuerwagen: Motorstrom;A;Single
 0x008A;Steuerwagen: Motorspannung;V;Single
 0x008B;Geschwindigkeit (absolut) inkl. Schleudern;m/s;Single
-0x008C;Batteriehauptschalter aus;aus=1, an=0;Single
+0x008C;Batteriehauptschalter aus;aus=1, an=0;BoolAsSingle
 0x008D;Status Fahrzeug;;Fail;s. eigener Abschnitt
 0x008E;Status Zugverband;;Fail;s. eigener Abschnitt
 0x008F;Bremsprobefunktion;;Single;0: aus, >0: aktiv

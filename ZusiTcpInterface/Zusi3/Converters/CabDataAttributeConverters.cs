@@ -13,5 +13,10 @@ namespace ZusiTcpInterface.Zusi3.Converters
     {
       return new CabDataChunk<bool>(id, BitConverter.ToSingle(payload, 0) != 0f);
     }
+    
+    public static IProtocolChunk ConvertFlashableValueAsSingle(short id, byte[] payload)
+    {
+      return new CabDataChunk<FlashableValue>(id, (FlashableValue)(int)BitConverter.ToSingle(payload, 0));
+    }
   }
 }

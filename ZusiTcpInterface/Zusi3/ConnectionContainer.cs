@@ -137,15 +137,16 @@ namespace ZusiTcpInterface.Zusi3
 
     private Dictionary<short, Func<short, byte[], IProtocolChunk>> GenerateConversionFunctions(IEnumerable<CabInfoTypeDescriptor> cabInfoDescriptors)
     {
-      var descriptorToConversionFunctionMap = new Dictionary<string, Func<short, byte[], IProtocolChunk>>()
+      var descriptorToConversionFunctionMap = new Dictionary<string, Func<short, byte[], IProtocolChunk>>(System.StringComparer.InvariantCultureIgnoreCase)
       {
-        {"single", CabDataAttributeConverters.ConvertSingle},
-        {"boolassingle", CabDataAttributeConverters.ConvertBoolAsSingle},
-        {"fail", (s, bytes) => {throw new NotSupportedException("Unsupported data type received");} }
+        {"Single", CabDataAttributeConverters.ConvertSingle},
+        {"BoolAsSingle", CabDataAttributeConverters.ConvertBoolAsSingle},
+        {"FlashableValueAsSingle", CabDataAttributeConverters.ConvertBoolAsSingle},
+        {"Fail", (s, bytes) => {throw new NotSupportedException("Unsupported data type received");} }
       };
 
       return cabInfoDescriptors.ToDictionary(descriptor => descriptor.Id,
-                                             descriptor => descriptorToConversionFunctionMap[descriptor.Type.ToLowerInvariant()]);
+                                             descriptor => descriptorToConversionFunctionMap[descriptor.Type]);
     }
 
     public void RequestData(string name)
