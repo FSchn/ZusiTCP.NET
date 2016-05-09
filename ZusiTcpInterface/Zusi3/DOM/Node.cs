@@ -2,9 +2,9 @@
 using System.Diagnostics.Contracts;
 using System.IO;
 
-namespace ZusiTcpInterface.Zusi3
+namespace ZusiTcpInterface.Zusi3.DOM
 {
-  internal class Node : IProtocolElement
+  public class Node : IProtocolElement
   {
     private readonly Dictionary<short, Node> _subNodes;
     private readonly Dictionary<short, Attribute> _attributes;

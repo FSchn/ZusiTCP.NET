@@ -2,9 +2,9 @@
 using System.Globalization;
 using System.IO;
 
-namespace ZusiTcpInterface.Zusi3
+namespace ZusiTcpInterface.Zusi3.TypeDescriptors
 {
-  internal static class CabInfoTypeDescriptorReader
+  public static class CabInfoTypeDescriptorReader
   {
     public static IEnumerable<CabInfoTypeDescriptor> ReadCommandsetFrom(Stream inputStream)
     {

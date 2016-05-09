@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.IO;
+using ZusiTcpInterface.Zusi3.DOM;
 
-namespace ZusiTcpInterface.Zusi3
+namespace ZusiTcpInterface.Zusi3.Packets
 {
   internal struct HelloPacket
   {
-    private const NodeCategory NodeCategory = Zusi3.NodeCategory.Handshake;
+    private const NodeCategory NodeCategory = Zusi3.DOM.NodeCategory.Handshake;
     private const short HelloNodeId = 0x01;
 
     private const short ProtocolVersion = 2;
@@ -31,7 +31,7 @@ namespace ZusiTcpInterface.Zusi3
     }
 
     [Pure]
-    public String ClientName
+    public string ClientName
     {
       get { return _clientName; }
     }

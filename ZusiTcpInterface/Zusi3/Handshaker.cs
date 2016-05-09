@@ -7,13 +7,13 @@ namespace ZusiTcpInterface.Zusi3
   {
     private readonly BinaryWriter _binaryWriter;
 
-    private readonly ClientType _clientType;
+    private readonly DOM.ClientType _clientType;
     private readonly string _clientName;
     private readonly string _clientVersion;
     private readonly IEnumerable<short> _neededData;
     private readonly IBlockingCollection<IProtocolChunk> _rxQueue;
 
-    public Handshaker(IBlockingCollection<IProtocolChunk> rxQueue, BinaryWriter binaryWriter, ClientType clientType, string clientName, string clientVersion, IEnumerable<short> neededData)
+    public Handshaker(IBlockingCollection<IProtocolChunk> rxQueue, BinaryWriter binaryWriter, DOM.ClientType clientType, string clientName, string clientVersion, IEnumerable<short> neededData)
     {
       _binaryWriter = binaryWriter;
       _clientType = clientType;
@@ -25,25 +25,25 @@ namespace ZusiTcpInterface.Zusi3
 
     public void ShakeHands()
     {
-      var hello = new HelloPacket(_clientType, _clientName, _clientVersion);
+      var hello = new Packets.HelloPacket(_clientType, _clientName, _clientVersion);
 
       hello.Serialise(_binaryWriter);
 
-      var handshakeConverter = new BranchingNodeConverter();
-      handshakeConverter[0x02] = new AckHelloConverter();
+      var handshakeConverter = new Converters.BranchingNodeConverter();
+      handshakeConverter[0x02] = new Converters.AckHelloConverter();
 
-      var rootNodeConverter = new TopLevelNodeConverter();
+      var rootNodeConverter = new Converters.TopLevelNodeConverter();
       rootNodeConverter[0x01] = handshakeConverter;
 
-      var ackHello = (AckHelloPacket)_rxQueue.Take();
+      var ackHello = (Packets.AckHelloPacket)_rxQueue.Take();
 
       if(!ackHello.ConnectionAccepted)
         throw new ConnectionRefusedException("Connection refused by Zusi.");
 
-      var neededDataPacket = new NeededDataPacket(_neededData);
+      var neededDataPacket = new Packets.NeededDataPacket(_neededData);
       neededDataPacket.Serialise(_binaryWriter);
 
-      var ackNeededData = (AckNeededDataPacket) _rxQueue.Take();
+      var ackNeededData = (Packets.AckNeededDataPacket) _rxQueue.Take();
 
       if(!ackNeededData.RequestAccepted)
         throw new ConnectionRefusedException("Needed data rejected by Zusi.");

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ZusiTcpInterface.Zusi3
+namespace ZusiTcpInterface.Zusi3.Converters
 {
   internal static class CabDataAttributeConverters
   {

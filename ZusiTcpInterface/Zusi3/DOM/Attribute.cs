@@ -3,9 +3,9 @@ using System.Diagnostics.Contracts;
 using System.IO;
 using System.Text;
 
-namespace ZusiTcpInterface.Zusi3
+namespace ZusiTcpInterface.Zusi3.DOM
 {
-  internal class Attribute : IProtocolElement
+  public class Attribute : IProtocolElement
   {
     private readonly byte[] _payload;
     private readonly short _id;

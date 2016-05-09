@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ZusiTcpInterface.Zusi3.TypeDescriptors;
 
 namespace ZusiTcpInterface.Zusi3
 {
