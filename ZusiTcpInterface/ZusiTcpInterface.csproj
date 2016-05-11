@@ -60,6 +60,7 @@
     <Compile Include="Zusi3\DOM\IProtocolElement.cs" />
     <Compile Include="Zusi3\Packets\AckHelloPacket.cs" />
     <Compile Include="Zusi3\Packets\AckNeededDataPacket.cs" />
+    <Compile Include="Zusi3\Packets\GraphicPacket.cs" />
     <Compile Include="Zusi3\Packets\HelloPacket.cs" />
     <Compile Include="Zusi3\Packets\NeededDataPacket.cs" />
     <Compile Include="Zusi3\TypeDescriptors\CabInfoTypeDescriptor.cs" />
