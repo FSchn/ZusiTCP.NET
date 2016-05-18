@@ -46,12 +46,22 @@ class ConverterDemo
 		foreach(System.Collections.Generic.KeyValuePair<int, int> v1 in SingleIdClientToMaster)
 		{
 			if (master.RequestedData.Contains(v1.Value))
+			{
 				client.RequestData(v1.Key);
+				int altStw;
+				if (SteuerwagenTranslationDict.TryGetValue(v1.Key, out altStw))
+				client.RequestData(altStw);
+			}
 		}
 		foreach(System.Collections.Generic.KeyValuePair<int, int> v1 in BoolIdClientToMaster)
 		{
 			if (master.RequestedData.Contains(v1.Value))
+			{
 				client.RequestData(v1.Key);
+				int altStw;
+				if (SteuerwagenTranslationDict.TryGetValue(v1.Key, out altStw))
+				client.RequestData(altStw);
+			}
 		}
 		if (master.RequestedData.Contains(2610)) //Date and Year
 		{
@@ -71,9 +81,9 @@ class ConverterDemo
 		if (master.RequestedData.Contains(2606)) //Notbremsung
 				client.RequestData(0x0022);
 		if (master.RequestedData.Contains(2607) || master.RequestedData.Contains(2646) 
-          || master.RequestedData.Contains(2648) || master.RequestedData.Contains(2627)) //Doors
+				  || master.RequestedData.Contains(2648) || master.RequestedData.Contains(2627)) //Doors
 				client.RequestData(0x0066);
-      
+		
 	}
 	
 	private static System.Collections.Generic.Dictionary<int, int> SingleIdClientToMaster;
@@ -82,6 +92,11 @@ class ConverterDemo
 	private static System.Collections.Generic.HashSet<int> PZBVars;
 	private static System.Collections.Generic.Dictionary<string, Zusi_Datenausgabe.PZBSystem> PZBTypes;
 	private static System.Collections.Generic.HashSet<string> LZBTypes;
+	private static System.Collections.Generic.Dictionary<int, int> SteuerwagenTranslationDict;
+	private static System.Collections.Generic.Dictionary<int, int> SteuerwagenTranslationDict_Inverse;
+	private static bool IsSteuerwagenMode = false;
+	private static bool HasZugkraftStw = false;
+	private static bool HasZugkraftLok = false;
 	private static void FillTranslatorDicts()
 	{
 		SingleIdClientToMaster = new System.Collections.Generic.Dictionary<int, int>();
@@ -90,6 +105,8 @@ class ConverterDemo
 		PZBVars = new System.Collections.Generic.HashSet<int>();
 		PZBTypes = new System.Collections.Generic.Dictionary<string, Zusi_Datenausgabe.PZBSystem>();
 		LZBTypes = new System.Collections.Generic.HashSet<string>();
+		SteuerwagenTranslationDict = new System.Collections.Generic.Dictionary<int, int>();
+		SteuerwagenTranslationDict_Inverse = new System.Collections.Generic.Dictionary<int, int>();
 		
 		SingleIdClientToMaster.Add(0x0001, 2561);
 		SingleIsV.Add(0x0001);
@@ -148,6 +165,32 @@ class ConverterDemo
 		PZBVars.Add(2635); //Zielweg 2575 macht keinen Sinn...
 		PZBVars.Add(2649); //PZB-System.
 		
+		SteuerwagenTranslationDict.Add(0x001A, 0x0058);
+		SteuerwagenTranslationDict.Add(0x001B, 0x0059);
+		SteuerwagenTranslationDict.Add(0x001C, 0x005A);
+		SteuerwagenTranslationDict.Add(0x001E, 0x005B);
+		SteuerwagenTranslationDict.Add(0x001F, 0x005C);
+		SteuerwagenTranslationDict.Add(0x0024, 0x005D);
+		
+		SteuerwagenTranslationDict.Add(0x0008, 0x007B);
+		SteuerwagenTranslationDict.Add(0x0009, 0x007C);
+		SteuerwagenTranslationDict.Add(0x000A, 0x007D);
+		SteuerwagenTranslationDict.Add(0x000B, 0x007E);
+		SteuerwagenTranslationDict.Add(0x000C, 0x007F);
+		SteuerwagenTranslationDict.Add(0x000D, 0x0080);
+		SteuerwagenTranslationDict.Add(0x000E, 0x0081);
+		SteuerwagenTranslationDict.Add(0x000F, 0x0082);
+		SteuerwagenTranslationDict.Add(0x0013, 0x0083);
+		SteuerwagenTranslationDict.Add(0x0014, 0x0084);
+		SteuerwagenTranslationDict.Add(0x0015, 0x0085);
+		SteuerwagenTranslationDict.Add(0x0029, 0x0086);
+		SteuerwagenTranslationDict.Add(0x002A, 0x0087);
+		SteuerwagenTranslationDict.Add(0x0062, 0x0089);
+		SteuerwagenTranslationDict.Add(0x0063, 0x008A);
+		
+		foreach(System.Collections.Generic.KeyValuePair<int, int> v1 in SteuerwagenTranslationDict)
+			SteuerwagenTranslationDict_Inverse.Add(v1.Value, v1.Key);
+		
 		PZBTypes.Add("Indusi I54", Zusi_Datenausgabe.PZBSystem.IndusiI54);
 		PZBTypes.Add("Indusi I60", Zusi_Datenausgabe.PZBSystem.IndusiI60);
 		PZBTypes.Add("Indusi I60M", Zusi_Datenausgabe.PZBSystem.IndusiI60); //ToDo: Ungenaue Konvertierung
@@ -175,19 +218,73 @@ class ConverterDemo
 	{
 		int idNew;
 		float v = data.Value;
-		if (SingleIdClientToMaster.TryGetValue(data.Id, out idNew))
+		int idOld = data.Id;
+		
+		if (idOld == 0x007C)
+			HasZugkraftStw = (v != 0.0f);
+		if (idOld == 0x0009)
+			HasZugkraftLok = (v != 0.0f);
+		if (HasZugkraftStw && !IsSteuerwagenMode)
 		{
-			if (SingleIsV.Contains(data.Id)) //v: m/s => km/h
+			System.Console.WriteLine("Schalte in den Steuerwagenmodus.");
+			IsSteuerwagenMode = true;
+		}
+		if (!HasZugkraftStw && HasZugkraftLok && IsSteuerwagenMode)
+		{
+			System.Console.WriteLine("Schalte in den Zugmodus.");
+			IsSteuerwagenMode = false;
+		}
+		
+		bool isZugId = SteuerwagenTranslationDict.ContainsKey(idOld);
+		bool isSteuerwagenId = SteuerwagenTranslationDict_Inverse.ContainsKey(idOld);
+		if ((IsSteuerwagenMode && isZugId) || (!IsSteuerwagenMode && isSteuerwagenId))
+		{
+			//System.Console.WriteLine(string.Format("Skip-mode {1:X4} at value {2}. ({0})",
+			//client[data.Id], data.Id, v));
+			return;
+		}
+		else if(isSteuerwagenId)
+		{
+			idOld = SteuerwagenTranslationDict_Inverse[idOld];
+			//System.Console.WriteLine(string.Format("Translate {1:X4} to {3:X4} at value {2}. ({0})",
+			//client[data.Id], data.Id, v, idOld));
+		}
+		
+		if (SingleIdClientToMaster.TryGetValue(idOld, out idNew))
+		{
+			if (SingleIsV.Contains(idOld)) //v: m/s => km/h
+			{
 				v *= 3.6f;
-			if (data.Id == 0x0061) //s: km => m
+			//System.Console.WriteLine(string.Format("Translate {1:X4} from {3} m/s to {2} km/h. ({0})",
+			//client[data.Id], data.Id, v, data.Value));
+		}
+			if (idOld == 0x0061) //s: km => m
 				v *= 1000f;
+		
 			master.SendSingle(v, idNew);
 		}
 	}
 	private static void On_BoolReceived(object sender, Zusi_Datenausgabe.DataSet<bool> data)
 	{
 		int idNew;
-		if (BoolIdClientToMaster.TryGetValue(data.Id, out idNew))
+		int idOld = data.Id;
+		
+		bool isZugId = SteuerwagenTranslationDict.ContainsKey(idOld);
+		bool isSteuerwagenId = SteuerwagenTranslationDict_Inverse.ContainsKey(idOld);
+		if ((IsSteuerwagenMode && isZugId) || (!IsSteuerwagenMode && isSteuerwagenId))
+		{
+			//System.Console.WriteLine(string.Format("Skip-mode {1:X4} at value {2}. ({0})",
+			//client[data.Id], data.Id, v));
+			return;
+		}
+		else if(isSteuerwagenId)
+		{
+			idOld = SteuerwagenTranslationDict_Inverse[idOld];
+			//System.Console.WriteLine(string.Format("Translate {1:X4} to {3:X4} at value {2}. ({0})",
+			//client[data.Id], data.Id, v, idOld));
+		}
+		
+		if (BoolIdClientToMaster.TryGetValue(idOld, out idNew))
 		{
 			master.SendBoolAsSingle(data.Value, idNew);
 		}
@@ -244,6 +341,6 @@ class ConverterDemo
 		master.SendBoolAsSingle(data.Value.Schalter_UnlockDoorsLeft || data.Value.Schalter_UnlockDoorsRight, 2607);
 		master.SendBoolAsSingle(data.Value.Schalter_UnlockDoorsLeft || data.Value.Schalter_UnlockDoorsRight, 2627);
 		master.SendBoolAsInt(data.Value.DoorSystemName != "", 2648);
-		System.Console.WriteLine(data.Value.DoorSystemName);
+		//System.Console.WriteLine(data.Value.DoorSystemName);
 	}
 }

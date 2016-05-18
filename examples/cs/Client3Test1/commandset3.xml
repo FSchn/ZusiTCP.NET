@@ -12,7 +12,7 @@
   <Command ID="0x000A" Name="Zugkraft pro Achse" Type="Single" />
   <Command ID="0x000B" Name="Zugkraft-soll gesamt" Type="Single" />
   <Command ID="0x000C" Name="Zugkraft-soll pro Achse" Type="Single" />
-  <Command ID="0x000D" Name="Oberstrom (nicht unter Zusi 2)" Type="Single" />
+  <Command ID="0x000D" Name="Oberstrom" Type="Single" />
   <Command ID="0x000E" Name="Fahrleitungsspannung" Type="Single" />
   <Command ID="0x000F" Name="Motordrehzahl" Type="Single" />
   <Command ID="0x0010" Name="Uhrzeit Stunde" Type="Single" />
@@ -59,21 +59,28 @@ y
   <Command ID="0x004C" Name="Gleiskrümmung" Type="Single" />
   <Command ID="0x004D" Name="Strecken-Vmax" Type="Single" />
   <Command ID="0x004E" Name="Zugkraftvorschlag AP" Type="Single" />
-Beschleunigung x
-y
-z
-Drehbeschleunigung
-x
-y
-z
+  
+  <!--ToDo: Ich hätte gerne einen Vektor3 anstatt isolierte Single-Werte-->
+  <Command ID="0x004F" Name="Beschleunigung x" Type="Single" />
+  <Command ID="0x0050" Name="Beschleunigung y" Type="Single" />
+  <Command ID="0x0051" Name="Beschleunigung z" Type="Single" />
+  <Command ID="0x0052" Name="Drehbeschleunigung x" Type="Single" />
+  <Command ID="0x0053" Name="Drehbeschleunigung y" Type="Single" />
+  <Command ID="0x0054" Name="Drehbeschleunigung z" Type="Single" />
+  
 Stromabhnehmer => Spezial!
   <Command ID="0x0056" Name="LM Federspeicherbremse" Type="BoolAsSingle" />
 Zustand F " => Spezial-Enum
-Steuerwagen 1...6
+  <Command ID="0x0058" Name="Steuerwagen: LM Getriebe" Type="BoolAsSingle" />
+  <Command ID="0x0059" Name="Steuerwagen: LM Schleudern" Type="BoolAsSingle" />
+  <Command ID="0x005A" Name="Steuerwagen: LM Gleiten" Type="BoolAsSingle" />
+  <Command ID="0x005B" Name="Steuerwagen: LM H-Bremse" Type="BoolAsSingle" />
+  <Command ID="0x005C" Name="Steuerwagen: LM R-Bremse" Type="BoolAsSingle" />
+  <Command ID="0x005D" Name="Steuerwagen: LM Drehzahlverstellung" Type="BoolAsSingle" />
 
-Druck Zeitbehälter
-Geschwindigkeit (absolut)
-Zug ist entgleist
+  <Command ID="0x005E" Name="Druck Zeitbehälter" Type="Single" />
+  <Command ID="0x005F" Name="Geschwindigkeit (absolut)" Type="Single" />
+  <Command ID="0x0060" Name="Zug ist entgleist" Type="BoolAsSingle" />
   <Command ID="0x0061" Name="Strecken-Km" Type="Single" />
   <Command ID="0x0062" Name="Motorstrom" Type="Single" />
   <Command ID="0x0063" Name="Motorspannung" Type="Single" />
@@ -83,13 +90,28 @@ Zug ist entgleist
   
 Individuell 21...40
 
-Stueruwagen7..22
+  <Command ID="0x007B" Name="Steuerwagen: Lüfter läuft" Type="BoolAsSingle" />
+  <Command ID="0x007C" Name="Steuerwagen: Zugkraft gesamt" Type="Single" />
+  <Command ID="0x007D" Name="Steuerwagen: Zugkraft pro Achse" Type="Single" />
+  <Command ID="0x007E" Name="Steuerwagen: Zugkraft-soll gesamt" Type="Single" />
+  <Command ID="0x007F" Name="Steuerwagen: Zugkraft-soll pro Achse" Type="Single" />
+  <Command ID="0x0080" Name="Steuerwagen: Oberstrom" Type="Single" />
+  <Command ID="0x0081" Name="Steuerwagen: Fahrleitungsspannung" Type="Single" />
+  <Command ID="0x0082" Name="Steuerwagen: Motordrehzahl" Type="Single" />
+  <Command ID="0x0083" Name="Steuerwagen: Hauptschalter" Type="BoolAsSingle" />
+  <Command ID="0x0084" Name="Steuerwagen: Trennschütz" Type="BoolAsSingle" />
+  <Command ID="0x0085" Name="Steuerwagen: Fahrstufe" Type="Single" />
+  <Command ID="0x0086" Name="Steuerwagen: Motordrehmoment" Type="Single" />
+  <Command ID="0x0087" Name="Steuerwagen: Motorlast normiert" Type="Single" />
+Steuerwagen: Stromabhnehmer => Spezial!
+  <Command ID="0x0089" Name="Steuerwagen: Motorstrom" Type="Single" />
+  <Command ID="0x008A" Name="Steuerwagen: Motorspannung" Type="Single" />
 
-Geschwindigkeit Absolut incl. Schludern
+  <Command ID="0x008B" Name="Geschwindigkeit (absolut) incl. Schludern" Type="Single" />
+  <Command ID="0x008C" Name="Bateriehauptschalter ausgeschaltet" Type="BoolAsSingle" />
 
-Bateriehauptschalter => b
 Status Fahreug => Spezial
-Status Zugverband => Spezial
+Status Zugverband => Spezial (noch nicht implentiert)
 Bremsprobefunktion => ???
 
 
