@@ -45,14 +45,15 @@ namespace WinFormsDemoApp
     
     private void OnZugReceived(DataChunk<bool> dataChunk)
     {
-      _fileNameBuffer = string.Empty;
-      _descriptionBuffer = string.Empty;
       if (dataChunk.Payload)
         _vehiclesBuffer = null;
       else
       {
-         lblVehicles.Text = string.Join(System.Environment.NewLine, _vehiclesBuffer.ToArray());
+        _vehiclesBuffer.Add(string.Format("{0} ({1})", _descriptionBuffer, _fileNameBuffer));
+        lblVehicles.Text = string.Join(System.Environment.NewLine, _vehiclesBuffer.ToArray());
       }
+      _fileNameBuffer = string.Empty;
+      _descriptionBuffer = string.Empty;
     }
     private void OnZugFzgReceived(DataChunk<bool> dataChunk)
     {
