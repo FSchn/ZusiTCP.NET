@@ -11,13 +11,16 @@ namespace WinFormsDemoApp
     private readonly ConnectionCreator _connectionCreator;
     private ThreadMarshallingZusiDataReceiver _dataReceiver;
     private Connection _connection;
+    private string _fileNameBuffer;
+    private string _descriptionBuffer;
+    private System.Collections.Generic.List<string> _vehiclesBuffer;
 
     public MainWindow()
     {
       InitializeComponent();
 
       _connectionCreator = new ConnectionCreator();
-      _connectionCreator.NeededData.Request("Geschwindigkeit", "LM Getriebe", "Status Sifa-Leuchtmelder", "Status Sifa-Hupe");
+      _connectionCreator.NeededData.Request("Geschwindigkeit", "LM Getriebe", "Status Sifa-Leuchtmelder", "Status Zugverband", "Status Sifa-Hupe");
     }
 
     private void OnGearboxPilotLightReceived(DataChunk<bool> dataChunk)
@@ -39,6 +42,35 @@ namespace WinFormsDemoApp
     {
       lblSifaHorn.Text = dataChunk.Payload.ToString();
     }
+    
+    private void OnZugReceived(DataChunk<bool> dataChunk)
+    {
+      _fileNameBuffer = string.Empty;
+      _descriptionBuffer = string.Empty;
+      if (dataChunk.Payload)
+        _vehiclesBuffer = null;
+      else
+      {
+         lblVehicles.Text = string.Join(System.Environment.NewLine, _vehiclesBuffer.ToArray());
+      }
+    }
+    private void OnZugFzgReceived(DataChunk<bool> dataChunk)
+    {
+      if (_vehiclesBuffer == null)
+        _vehiclesBuffer = new System.Collections.Generic.List<string>();
+      else
+        _vehiclesBuffer.Add(string.Format("{0} ({1})", _descriptionBuffer, _fileNameBuffer));
+      _fileNameBuffer = string.Empty;
+      _descriptionBuffer = string.Empty;
+    }
+    private void OnZugFzgFileNameReceived(DataChunk<string> dataChunk)
+    {
+      _fileNameBuffer = dataChunk.Payload;
+    }
+    private void OnZugFzgDescriptionReceived(DataChunk<string> dataChunk)
+    {
+      _descriptionBuffer = dataChunk.Payload;
+    }
 
     private void MainWindow_Load(object sender, EventArgs e)
     {
@@ -51,6 +83,11 @@ namespace WinFormsDemoApp
       _dataReceiver.RegisterCallbackFor<bool>("Status Sifa-Leuchtmelder", OnSifaPilotLightReceived);
       _dataReceiver.RegisterCallbackFor<StatusSifaHupe>("Status Sifa-Hupe", OnSifaHornReceived);
       _dataReceiver.RegisterCallbackFor<float>("Geschwindigkeit", OnVelocityReceived);
+      
+      _dataReceiver.RegisterCallbackFor<bool>("Status Zugverband", OnZugReceived);
+      _dataReceiver.RegisterCallbackFor<bool>("Status Zugverband:Fahrzeug", OnZugFzgReceived);
+      _dataReceiver.RegisterCallbackFor<string>("Status Zugverband:Fahrzeug:Dateiname", OnZugFzgFileNameReceived);
+      _dataReceiver.RegisterCallbackFor<string>("Status Zugverband:Fahrzeug:Beschreibung", OnZugFzgDescriptionReceived);
 
       lblConnecting.Text = "Connected!";
     }

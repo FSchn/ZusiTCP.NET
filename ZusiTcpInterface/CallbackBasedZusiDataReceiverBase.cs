@@ -37,7 +37,7 @@ namespace ZusiTcpInterface
       }
     }
 
-    public void RegisterCallbackFor<T>(AttributeDescriptor descriptor, Action<DataChunk<T>> callback)
+    public void RegisterCallbackFor<T>(AttributeOrNodeDescriptor descriptor, Action<DataChunk<T>> callback)
     {
       RegisterCallbackFor(descriptor.Address, callback);
     }

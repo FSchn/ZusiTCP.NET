@@ -2,7 +2,7 @@
 
 namespace ZusiTcpInterface.TypeDescriptors
 {
-  public class AttributeDescriptor : IEquatable<AttributeDescriptor>
+  public class AttributeOrNodeDescriptor : IEquatable<AttributeOrNodeDescriptor>
   {
     private readonly string _unit;
     private readonly string _type;
@@ -10,8 +10,9 @@ namespace ZusiTcpInterface.TypeDescriptors
     private readonly string _qualifiedName;
     private readonly string _name;
     private readonly string _comment;
+    private readonly bool _isNode;
 
-    public AttributeDescriptor(CabInfoAddress address, string qualifiedName, string name, string unit, string type, string comment = "")
+    public AttributeOrNodeDescriptor(CabInfoAddress address, bool isNode, string qualifiedName, string name, string unit, string type, string comment = "")
     {
       if (address == null)
         throw new ArgumentNullException("address");
@@ -30,6 +31,7 @@ namespace ZusiTcpInterface.TypeDescriptors
       _unit = unit;
       _type = type;
       _comment = comment;
+      _isNode = isNode;
     }
 
     public string Unit
@@ -61,10 +63,15 @@ namespace ZusiTcpInterface.TypeDescriptors
     {
       get { return _qualifiedName; }
     }
+    
+    public bool IsNode
+    {
+      get { return _isNode; }
+    }
 
     #region Equality operations
 
-    public bool Equals(AttributeDescriptor other)
+    public bool Equals(AttributeOrNodeDescriptor other)
     {
       if (ReferenceEquals(null, other)) return false;
       if (ReferenceEquals(this, other)) return true;
@@ -73,7 +80,8 @@ namespace ZusiTcpInterface.TypeDescriptors
           && string.Equals(_name, other._name)
           && string.Equals(_comment, other._comment)
           && string.Equals(_unit, other._unit)
-          && string.Equals(_type, other._type);
+          && string.Equals(_type, other._type)
+          && string.Equals(_isNode, other._isNode);
     }
 
     public override bool Equals(object obj)
@@ -81,7 +89,7 @@ namespace ZusiTcpInterface.TypeDescriptors
       if (ReferenceEquals(null, obj)) return false;
       if (ReferenceEquals(this, obj)) return true;
       if (obj.GetType() != this.GetType()) return false;
-      return Equals((AttributeDescriptor) obj);
+      return Equals((AttributeOrNodeDescriptor) obj);
     }
 
     public override int GetHashCode()
@@ -94,16 +102,17 @@ namespace ZusiTcpInterface.TypeDescriptors
         hashCode = (hashCode * 397) ^ _comment.GetHashCode();
         hashCode = (hashCode * 397) ^ _unit.GetHashCode();
         hashCode = (hashCode * 397) ^ _type.GetHashCode();
+        //hashCode = (hashCode * 397) ^ _isNode.GetHashCode(); //Nodes and Attributes usually won't collide...
         return hashCode;
       }
     }
 
-    public static bool operator ==(AttributeDescriptor left, AttributeDescriptor right)
+    public static bool operator ==(AttributeOrNodeDescriptor left, AttributeOrNodeDescriptor right)
     {
       return Equals(left, right);
     }
 
-    public static bool operator !=(AttributeDescriptor left, AttributeDescriptor right)
+    public static bool operator !=(AttributeOrNodeDescriptor left, AttributeOrNodeDescriptor right)
     {
       return !Equals(left, right);
     }

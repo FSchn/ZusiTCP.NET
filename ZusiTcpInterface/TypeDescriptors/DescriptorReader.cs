@@ -10,7 +10,7 @@ namespace ZusiTcpInterface.TypeDescriptors
   {
     private static readonly string _namespace = "ZusiTcpInterface/CabInfoTypes";
 
-    public static IEnumerable<AttributeDescriptor> ReadCommandsetFrom(Stream inputStream)
+    public static IEnumerable<AttributeOrNodeDescriptor> ReadCommandsetFrom(Stream inputStream)
     {
       var root = XElement.Load(inputStream);
 
@@ -19,16 +19,23 @@ namespace ZusiTcpInterface.TypeDescriptors
       return descriptors;
     }
 
-    private static IEnumerable<AttributeDescriptor> ConvertRootNode(XElement arg)
+    private static IEnumerable<AttributeOrNodeDescriptor> ConvertRootNode(XElement arg)
     {
       var baseAddress = new CabInfoAddress();
       var attributes = arg.Elements(XName.Get("Attribute", _namespace)).Select(xmlAttribute => ConvertAttribute(xmlAttribute, baseAddress, null));
       var attributesFromChildNodes = arg.Elements(XName.Get("Node", _namespace)).SelectMany(xmlNode => ConvertNode(xmlNode, baseAddress, null));
 
-      return attributes.Concat(attributesFromChildNodes);
+      var xmlAttributes = arg.Attributes().ToDictionary(a => a.Name.LocalName, a => a.Value, StringComparer.InvariantCultureIgnoreCase);
+      // Optional attribute
+      string converter = xmlAttributes.ContainsKey("converter") ? xmlAttributes["converter"] : String.Empty;
+
+      if (converter == String.Empty)
+        return attributes.Concat(attributesFromChildNodes);
+      else
+        return attributes.Concat(attributesFromChildNodes).Concat(new [] {new AttributeOrNodeDescriptor(baseAddress, true, /*qualifiedName*/ "root", /*name*/String.Empty, /*unit*/String.Empty, converter, /*comment*/String.Empty)});
     }
 
-    private static IEnumerable<AttributeDescriptor> ConvertNode(XElement arg, CabInfoAddress baseAddress, string baseName)
+    private static IEnumerable<AttributeOrNodeDescriptor> ConvertNode(XElement arg, CabInfoAddress baseAddress, string baseName)
     {
       var xmlAttributes = arg.Attributes().ToDictionary(a => a.Name.LocalName, a => a.Value, StringComparer.InvariantCultureIgnoreCase);
 
@@ -37,16 +44,20 @@ namespace ZusiTcpInterface.TypeDescriptors
 
       // Optional attribute
       string comment = xmlAttributes.ContainsKey("comment") ? xmlAttributes["comment"] : String.Empty;
+      string converter = xmlAttributes.ContainsKey("converter") ? xmlAttributes["converter"] : String.Empty;
 
       var localAddress = baseAddress.Concat(id);
 
       var attributes = arg.Elements(XName.Get("Attribute", _namespace)).Select(xmlAttribute => ConvertAttribute(xmlAttribute, localAddress, ConcatenateNames(baseName, name)));
       var attributesFromChildNodes = arg.Elements(XName.Get("Node", _namespace)).SelectMany(xmlNode => ConvertNode(xmlNode, localAddress, ConcatenateNames(baseName, name)));
-
-      return attributes.Concat(attributesFromChildNodes);
+      
+      if (converter == String.Empty)
+        return attributes.Concat(attributesFromChildNodes);
+      else
+        return attributes.Concat(attributesFromChildNodes).Concat(new [] {new AttributeOrNodeDescriptor(localAddress, true, ConcatenateNames(baseName, name), name, /*unit*/String.Empty, converter, comment)});
     }
 
-    private static AttributeDescriptor ConvertAttribute(XElement arg, CabInfoAddress baseAddress, string baseName)
+    private static AttributeOrNodeDescriptor ConvertAttribute(XElement arg, CabInfoAddress baseAddress, string baseName)
     {
       var xmlAttributes = arg.Attributes().ToDictionary(a => a.Name.LocalName, a => a.Value, StringComparer.InvariantCultureIgnoreCase);
 
@@ -60,7 +71,7 @@ namespace ZusiTcpInterface.TypeDescriptors
       string comment = xmlAttributes.ContainsKey("comment") ? xmlAttributes["comment"] : String.Empty;
 
       var localAddress = baseAddress.Concat(id);
-      return new AttributeDescriptor(localAddress, ConcatenateNames(baseName, name), name, unit, converter, comment);
+      return new AttributeOrNodeDescriptor(localAddress, false, ConcatenateNames(baseName, name), name, unit, converter, comment);
     }
 
     private static string ConcatenateNames(string baseName, string name)

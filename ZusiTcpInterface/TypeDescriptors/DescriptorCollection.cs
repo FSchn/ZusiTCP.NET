@@ -6,14 +6,14 @@ using System.Linq;
 namespace ZusiTcpInterface.TypeDescriptors
 {
   [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Advanced)]
-  public class DescriptorCollection : IEnumerable<AttributeDescriptor>, IEquatable<DescriptorCollection>
+  public class DescriptorCollection : IEnumerable<AttributeOrNodeDescriptor>, IEquatable<DescriptorCollection>
   {
-    private readonly Dictionary<Address, AttributeDescriptor> _byId = new Dictionary<Address, AttributeDescriptor>();
-    private readonly Dictionary<string, AttributeDescriptor> _byName = new Dictionary<string, AttributeDescriptor>();
+    private readonly Dictionary<Address, AttributeOrNodeDescriptor> _byId = new Dictionary<Address, AttributeOrNodeDescriptor>();
+    private readonly Dictionary<string, AttributeOrNodeDescriptor> _byName = new Dictionary<string, AttributeOrNodeDescriptor>();
 
-    public DescriptorCollection(IEnumerable<AttributeDescriptor> descriptors)
+    public DescriptorCollection(IEnumerable<AttributeOrNodeDescriptor> descriptors)
     {
-      var descriptorList = descriptors as IList<AttributeDescriptor> ?? descriptors.ToArray();
+      var descriptorList = descriptors as IList<AttributeOrNodeDescriptor> ?? descriptors.ToArray();
       foreach (var descriptor in descriptorList)
       {
         var name = descriptor.QualifiedName;
@@ -45,31 +45,31 @@ namespace ZusiTcpInterface.TypeDescriptors
       }
     }
 
-    public AttributeDescriptor GetBy(string name)
+    public AttributeOrNodeDescriptor GetBy(string name)
     {
-      AttributeDescriptor foundDescriptor;
+      AttributeOrNodeDescriptor foundDescriptor;
       if(_byName.TryGetValue(name, out foundDescriptor))
         return foundDescriptor;
 
       return _byName.Values.Single(descriptor => descriptor.Name == name);
     }
 
-    public AttributeDescriptor GetBy(Address id)
+    public AttributeOrNodeDescriptor GetBy(Address id)
     {
       return _byId[id];
     }
 
-    public AttributeDescriptor this[string name]
+    public AttributeOrNodeDescriptor this[string name]
     {
       get { return GetBy(name); }
     }
 
-    public AttributeDescriptor this[Address id]
+    public AttributeOrNodeDescriptor this[Address id]
     {
       get { return GetBy(id); }
     }
 
-    IEnumerator<AttributeDescriptor> IEnumerable<AttributeDescriptor>.GetEnumerator()
+    IEnumerator<AttributeOrNodeDescriptor> IEnumerable<AttributeOrNodeDescriptor>.GetEnumerator()
     {
       return _byId.Values.GetEnumerator();
     }
@@ -111,7 +111,7 @@ namespace ZusiTcpInterface.TypeDescriptors
       return _byId.Aggregate(0, ComputeHashCode);
     }
 
-    private int ComputeHashCode(int aggregateHashCode, KeyValuePair<Address, AttributeDescriptor> descriptor)
+    private int ComputeHashCode(int aggregateHashCode, KeyValuePair<Address, AttributeOrNodeDescriptor> descriptor)
     {
       var hashCode = (aggregateHashCode*397) ^ descriptor.Key.GetHashCode();
       return (hashCode * 397) ^ descriptor.Value.GetHashCode();

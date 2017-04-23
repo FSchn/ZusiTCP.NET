@@ -7,7 +7,7 @@ namespace ZusiTcpInterface
   public class NeededDataCollection
   {
     private readonly DescriptorCollection _descriptorCollection;
-    private readonly HashSet<AttributeDescriptor> _requestedDescriptors = new HashSet<AttributeDescriptor>();
+    private readonly HashSet<AttributeOrNodeDescriptor> _requestedDescriptors = new HashSet<AttributeOrNodeDescriptor>();
 
     public NeededDataCollection(DescriptorCollection descriptorCollection)
     {
@@ -30,7 +30,7 @@ namespace ZusiTcpInterface
       }
     }
 
-    public IEnumerable<AttributeDescriptor> GetRequestedDescriptors()
+    public IEnumerable<AttributeOrNodeDescriptor> GetRequestedDescriptors()
     {
       return _requestedDescriptors;
     }

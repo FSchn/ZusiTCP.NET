@@ -36,7 +36,7 @@ namespace ZusiTcpInterface
       InitialiseFrom(commandsetFileStream);
     }
 
-    public ConnectionCreator(IEnumerable<AttributeDescriptor> descriptors)
+    public ConnectionCreator(IEnumerable<AttributeOrNodeDescriptor> descriptors)
     {
       InitialiseFrom(descriptors);
     }
@@ -47,7 +47,7 @@ namespace ZusiTcpInterface
       InitialiseFrom(descriptors);
     }
 
-    private void InitialiseFrom(IEnumerable<AttributeDescriptor> descriptors)
+    private void InitialiseFrom(IEnumerable<AttributeOrNodeDescriptor> descriptors)
     {
       var descriptorCollection = new DescriptorCollection(descriptors);
       _descriptors = descriptorCollection;
@@ -79,8 +79,9 @@ namespace ZusiTcpInterface
 
     private INodeConverter GenerateNodeConverter(DescriptorCollection descriptors)
     {
-        var attributeConverters = AttributeConverters.MapToDescriptors(descriptors);
-        return new FlatteningNodeConverter { ConversionFunctions = attributeConverters };
+        var attributeConverters = AttributeConverters.MapToAttributeDescriptors(descriptors);
+        var nodeConverters = AttributeConverters.MapToNodeDescriptors(descriptors);
+        return new FlatteningNodeConverter { AttributeConversionFunctions = attributeConverters, NodeConversionFunctions = nodeConverters };
     }
 
     public Connection CreateConnection()

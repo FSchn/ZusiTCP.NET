@@ -16,8 +16,14 @@ namespace RawQueueDemoApp
       var gearboxPilotLightAddress = connectionCreator.Descriptors["LM Getriebe"].Address;
       var sifaPilotLightAddress = connectionCreator.Descriptors["Status Sifa-Leuchtmelder"].Address;
       var sifaHornAddress = connectionCreator.Descriptors["Status Sifa-Hupe"].Address;
+      var rootAddress = connectionCreator.Descriptors["root"].Address;
+      
+      var trainSettingAddress = connectionCreator.Descriptors["Status Zugverband"].Address;
+      var trainSettingAddressFzg = connectionCreator.Descriptors["Status Zugverband:Fahrzeug"].Address;
+      var trainSettingAddressFzgFileName = connectionCreator.Descriptors["Status Zugverband:Fahrzeug:Dateiname"].Address;
+      var trainSettingAddressFzgDesc = connectionCreator.Descriptors["Status Zugverband:Fahrzeug:Beschreibung"].Address;
 
-      connectionCreator.NeededData.Request(velocityAddress, gearboxPilotLightAddress, sifaHornAddress, sifaHornAddress);
+      connectionCreator.NeededData.Request(velocityAddress, gearboxPilotLightAddress, sifaHornAddress, sifaHornAddress, trainSettingAddress);
 
       using (var connection = connectionCreator.CreateConnection())
       {
@@ -45,6 +51,37 @@ namespace RawQueueDemoApp
           else if (chunk.Address == sifaHornAddress)
           {
             Console.WriteLine("Sifa horn state = {0}", ((DataChunk<StatusSifaHupe>)chunk).Payload);
+          }
+          else if (chunk.Address == rootAddress)
+          {
+            //if (((DataChunk<bool>)chunk).Payload)
+            //  Console.WriteLine("--Begin--");
+            //else
+            //  Console.WriteLine("--End--");
+          }
+          else if (chunk.Address == trainSettingAddress)
+          {
+            if (((DataChunk<bool>)chunk).Payload)
+              Console.WriteLine("--Start Train--");
+            else
+              Console.WriteLine("--End Train--");
+          }
+          else if (chunk.Address == trainSettingAddressFzg)
+          {
+            Console.WriteLine("--Vehicle--");
+          }
+          else if (chunk.Address == trainSettingAddressFzgFileName)
+          {
+            Console.WriteLine("File = {0}", ((DataChunk<string>)chunk).Payload);
+          }
+          else if (chunk.Address == trainSettingAddressFzgDesc)
+          {
+            Console.WriteLine("BR = {0}", ((DataChunk<string>)chunk).Payload);
+          }
+          else
+          {
+            //Remarks: programes have to ignore unknown input, but it may be helpful to have a look at it at this tutorial.
+            //Console.WriteLine("unknown address = {0}", chunk.Address.ToString());
           }
         }
       }

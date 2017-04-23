@@ -35,6 +35,7 @@
       this.lblConnecting = new System.Windows.Forms.Label();
       this.lblSifaStatus = new System.Windows.Forms.Label();
       this.label5 = new System.Windows.Forms.Label();
+      this.lblVehicles = new System.Windows.Forms.Label();
       this.label4 = new System.Windows.Forms.Label();
       this.lblSifaHorn = new System.Windows.Forms.Label();
       this.SuspendLayout();
@@ -102,6 +103,15 @@
       this.label5.TabIndex = 5;
       this.label5.Text = "Sifa indicator:";
       // 
+      // lblVehicles
+      // 
+      this.lblVehicles.AutoSize = true;
+      this.lblVehicles.Location = new System.Drawing.Point(30, 96);
+      this.lblVehicles.Name = "lblVehicles";
+      this.lblVehicles.Size = new System.Drawing.Size(71, 13);
+      this.lblVehicles.TabIndex = 5;
+      this.lblVehicles.Text = "<Vehicles>";
+      // 
       // label4
       // 
       this.label4.AutoSize = true;
@@ -127,6 +137,7 @@
       this.Controls.Add(this.label4);
       this.Controls.Add(this.lblSifaStatus);
       this.Controls.Add(this.label5);
+      this.Controls.Add(this.lblVehicles);
       this.Controls.Add(this.lblConnecting);
       this.Controls.Add(this.lblVelocity);
       this.Controls.Add(this.lblGearboxIndicator);
@@ -151,6 +162,7 @@
     private System.Windows.Forms.Label lblConnecting;
     private System.Windows.Forms.Label lblSifaStatus;
     private System.Windows.Forms.Label label5;
+    private System.Windows.Forms.Label lblVehicles;
     private System.Windows.Forms.Label label4;
     private System.Windows.Forms.Label lblSifaHorn;
   }

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ProtocolDefinition xmlns="ZusiTcpInterface/CabInfoTypes">
+<ProtocolDefinition xmlns="ZusiTcpInterface/CabInfoTypes" converter="start;end">
   <Attribute id="0x0001" name="Geschwindigkeit" unit="m/s" converter="Single" />
   <Attribute id="0x0002" name="Druck Hauptluftleitung" unit="bar" converter="Single" />
   <Attribute id="0x0003" name="Druck Bremszylinder" unit="bar" converter="Single" />
@@ -32,7 +32,13 @@
   <Attribute id="0x001F" name="LM R-Bremse" unit="aus/an" converter="BoolAsSingle" />
   <Attribute id="0x0020" name="LM Hochabbremsung" unit="aus/an" converter="BoolAsSingle" />
   <Attribute id="0x0021" name="LM Schnellbremsung" unit="aus/an" converter="BoolAsSingle" />
-  <Attribute id="0x0022" name="Status Notbremsung" converter="Fail" comment="s. eigener Abschnitt" />
+  <Node id="0x0022" name="Status Notbremssystem">
+    <Attribute id="0x0001" name="Bauart" converter="String" />
+    <Attribute id="0x0002" name="Status Notbremssystem" converter="Fail" comment="Enum" />
+    <Attribute id="0x0003" name="LM Notbremssystem bereit" unit="aus/an" converter="BoolAsByte" />
+    <Attribute id="0x0004" name="LM Notbremsung" unit="aus/an" converter="BoolAsByte" />
+    <Attribute id="0x0005" name="Testmodus" unit="aus/an" converter="BoolAsByte" />
+  </Node>
   <Attribute id="0x0023" name="LM Uhrzeit (digital)" unit="Zeit" converter="Single" comment="0...1 (0:00 bis 24:00 Uhr)" />
   <Attribute id="0x0024" name="LM Drehzahlverstellung" unit="aus/an" converter="BoolAsSingle" />
   <Attribute id="0x0025" name="LM Fahrtrichtung vor" unit="aus/an" converter="BoolAsSingle" />
@@ -106,11 +112,11 @@
     <Attribute id="0x0006" name="Status Sifa-Luftabsperrhahn" converter="SwitchState" />
   </Node>
   <Node id="0x0065" name="Status Zugsicherung">
-  	<Attribute id="0x0001" name="Bauart" converter="String" />
-  	<Node id="0x0002" name="Einstellungen">
-  		<Attribute id="0x0001" name="Zugart" converter="Zugart" />
-  		<Attribute id="0x0002" name="Tf-Nummer" converter="String" />
-  		<Attribute id="0x0003" name="Zugnummer" converter="String" />
+    <Attribute id="0x0001" name="Bauart" converter="String" />
+    <Node id="0x0002" name="Einstellungen">
+      <Attribute id="0x0001" name="Zugart" converter="Zugart" />
+      <Attribute id="0x0002" name="Tf-Nummer" converter="String" />
+      <Attribute id="0x0003" name="Zugnummer" converter="String" />
       <Node id="0x0004" name="Grunddaten">
         <Attribute id="0x0001" name="BRH-Wert" converter="Short" />
         <Attribute id="0x0002" name="BRA-Wert" converter="Short" />
@@ -133,24 +139,24 @@
         <Attribute id="0x0005" name="Zugart" converter="Zugart" />
         <Attribute id="0x0006" name="Modus" converter="AktiveZugdaten" />
       </Node>
-  		<Attribute id="0x0007" name="Hauptschalter" converter="SwitchState" />
-  		<Attribute id="0x0008" name="Indusi-Störschalter" converter="SwitchState" />
-  		<Attribute id="0x0009" name="LZB-Störschalter" converter="SwitchState" />
-  		<Attribute id="0x000A" name="Luftabsperrhahn" converter="SwitchState" />
-  	</Node>
-  	<Node id="0x0003" name="Betriebsdaten">
-  		<Attribute id="0x0002" name="Zustand Zugsicherung" converter="ZustandZugsicherung" />
-  		<Attribute id="0x0003" name="Grund für Zwangsbremsung" converter="GrundZwangsbremsung" />
-  		<Attribute id="0x0004" name="Zwangsbremsung Grund" converter="String" />
-  		<Attribute id="0x0005" name="LM 1000Hz" converter="BoolAsByte" />
-  		<Attribute id="0x0006" name="LM Zugart U" converter="BoolAsByte" />
-  		<Attribute id="0x0007" name="LM Zugart M" converter="BoolAsByte" />
-  		<Attribute id="0x0008" name="LM Zugart O" converter="BoolAsByte" />
-	    <Attribute id="0x0009" name="Indusi-Hupe" converter="IndusiHupe" />
-	    <Attribute id="0x000A" name="LM 500Hz" converter="BoolAsByte" />
-	    <Attribute id="0x000B" name="LM Befehl" converter="BoolAsByte" />
-	    <Attribute id="0x000C" name="Zusatzinfo Melderbild" converter="ZusatzinfoMelderbild" />
-	    <Attribute id="0x000D" name="LZB-Zustand" converter="LzbZustand" />
+      <Attribute id="0x0007" name="Hauptschalter" converter="SwitchState" />
+      <Attribute id="0x0008" name="Indusi-Störschalter" converter="SwitchState" />
+      <Attribute id="0x0009" name="LZB-Störschalter" converter="SwitchState" />
+      <Attribute id="0x000A" name="Luftabsperrhahn" converter="SwitchState" />
+    </Node>
+    <Node id="0x0003" name="Betriebsdaten">
+      <Attribute id="0x0002" name="Zustand Zugsicherung" converter="ZustandZugsicherung" />
+      <Attribute id="0x0003" name="Grund für Zwangsbremsung" converter="GrundZwangsbremsung" />
+      <Attribute id="0x0004" name="Zwangsbremsung Grund" converter="String" />
+      <Attribute id="0x0005" name="LM 1000Hz" converter="BoolAsByte" />
+      <Attribute id="0x0006" name="LM Zugart U" converter="BoolAsByte" />
+      <Attribute id="0x0007" name="LM Zugart M" converter="BoolAsByte" />
+      <Attribute id="0x0008" name="LM Zugart O" converter="BoolAsByte" />
+      <Attribute id="0x0009" name="Indusi-Hupe" converter="IndusiHupe" />
+      <Attribute id="0x000A" name="LM 500Hz" converter="BoolAsByte" />
+      <Attribute id="0x000B" name="LM Befehl" converter="BoolAsByte" />
+      <Attribute id="0x000C" name="Zusatzinfo Melderbild" converter="ZusatzinfoMelderbild" />
+      <Attribute id="0x000D" name="LZB-Zustand" converter="LzbZustand" />
       <Node id="0x000E" name="Ende-Verfahren läuft">
         <Attribute id="0x0001" name="Status" converter="StatusEndeVerfahren" />
       </Node>
@@ -199,10 +205,30 @@
       <Attribute id="0x0024" name="Status LM G" converter="PilotLightState" />
       <Attribute id="0x0025" name="Status LM Prüf/Stör" converter="PilotLightState" />
       <Attribute id="0x0026" name="CIR-Elke-Modus aktiv" converter="BoolAsByte" />
-      <!-- Node 0x0028 (Funktionsprüfung) is not supported -->
-	  </Node>
+      <Attribute id="0x0027" name="Zugdatenanzeige im MFA aktiv" converter="BoolAsByte" />
+      <Node id="0x0028" name="Funktionsprüfung" converter="start"><!-- Untested! -->
+        <Node id="0x0001" name="Blinktest" converter="start" />
+        <Node id="0x0002" name="Führungsgrößentest" converter="start" />
+        <Node id="0x0003" name="Bereitschaftstest" converter="start" />
+        <Node id="0x0004" name="Zwangsbremstest" converter="start" />
+      </Node>
+    </Node>
   </Node>
-  <Attribute id="0x0066" name="Status Türen" converter="Fail" comment="s. eigener Abschnitt" />
+  <Node id="0x0066" name="Status Türsystem">
+    <Attribute id="0x0001" name="Bauart" converter="String" />
+    <Attribute id="0x0002" name="Status links" converter="Fail" comment="Enum" />
+    <Attribute id="0x0003" name="Status rechts" converter="Fail" comment="Enum" />
+    <Attribute id="0x0004" name="Traktionssperre" converter="BoolAsByte" />
+    <Attribute id="0x0005" name="Seitenwahlschalter" converter="Fail" comment="Enum" />
+    <Attribute id="0x0006" name="LM links" converter="BoolAsByte" />
+    <Attribute id="0x0007" name="LM rechts" converter="BoolAsByte" />
+    <Attribute id="0x0008" name="Status LM links" converter="PilotLightState" />
+    <Attribute id="0x0009" name="Status LM rechts" converter="PilotLightState" />
+    <Attribute id="0x000A" name="LM Zwangsschließen" converter="BoolAsByte" />
+    <Attribute id="0x000B" name="Status LM Zwangsschließen" converter="PilotLightState" />
+    <Attribute id="0x000C" name="LM links + rechts" converter="BoolAsByte" />
+    <Attribute id="0x000D" name="Status LM links + rechts" converter="PilotLightState" />
+  </Node>
   <Attribute id="0x0067" name="Individuell 21" converter="Single" />
   <Attribute id="0x0068" name="Individuell 22" converter="Single" />
   <Attribute id="0x0069" name="Individuell 23" converter="Single" />
@@ -241,7 +267,25 @@
   <Attribute id="0x008A" name="Steuerwagen: Motorspannung" unit="V" converter="Single" />
   <Attribute id="0x008B" name="Geschwindigkeit (absolut) inkl. Schleudern" unit="m/s" converter="Single" />
   <Attribute id="0x008C" name="Batteriehauptschalter aus" unit="aus=1, an=0" converter="Single" />
-  <Attribute id="0x008D" name="Status Fahrzeug" converter="Fail" comment="s. eigener Abschnitt" />
-  <Attribute id="0x008E" name="Status Zugverband" converter="Fail" comment="s. eigener Abschnitt" />
+  <Node id="0x008D" name="Status Fahrzeug">
+    <Attribute id="0x0001" name="Grund Nullstellungszwang" converter="Fail" comment="Enum" />
+    <Attribute id="0x0002" name="Grund Traktionssperre" converter="Fail" comment="Enum" />
+    <Attribute id="0x0003" name="Status Fahrschalter" converter="SwitchState" />
+    <Attribute id="0x0004" name="Status Dynamische Bremse" converter="SwitchState" />
+  </Node>
+  <Node id="0x008E" name="Status Zugverband" converter="start;end">
+    <Node id="0x0001" name="Fahrzeug" converter="start"><!-- Untested! -->
+      <Attribute id="0x0001" name="Dateiname" converter="String" />
+      <Attribute id="0x0002" name="Beschreibung" converter="String" />
+      <!--Attribute id="0x0003" name="Bremsstellung" converter="Fail" comment="Enum" /-->
+    </Node>
+  </Node>
   <Attribute id="0x008F" name="Bremsprobefunktion" converter="Single" comment="0: aus, &gt;0: aktiv" />
+  <Attribute id="0x0090" name="Zug- und Brems-Gesamtkraftsoll normiert" unit="1" converter="Single" comment="(0...1) normiert auf aktuelle Fmax" />
+  <Attribute id="0x0091" name="Steuerwagen: Zug- und Brems-Gesamtkraftsoll normiert" unit="1" converter="Single" comment="(0...1) normiert auf aktuelle Fmax" />
+  <Node id="0x0092" name="Status Weichen">
+    <!--Derzeit keine dokumentierten Werte-->
+  </Node>
+  <Attribute id="0x0093" name="Zug- und Brems-Gesamtkraftsoll absolut normiert" unit="1" converter="Single" comment="(0...1) normiert auf Anfahrzugkraft" />
+  <Attribute id="0x0094" name="Steuerwagen: Zug- und Brems-Gesamtkraftsoll absolut normiert" unit="1" converter="Single" comment="(0...1) normiert auf Anfahrzugkraft" />
 </ProtocolDefinition>
